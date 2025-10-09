@@ -2,11 +2,18 @@
 title:               IFT3700-Hockey
 tagline:             'A template based on the Lanyon Jekyll theme'
 description:         'Hockey project'
-url:                 '3700-LMH'
+url:                 https://tibbyshr.github.io/3700-Hockey-Project/
 baseurl:             ''
 paginate:            5
 permalink:           pretty
 
+
+theme: minima
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+
+  
 # About/contact
 author:
   name:              Mark Otto

@@ -2,7 +2,7 @@ name: Build and Deploy Jekyll
 
 on:
   push:
-    branches: [ main ]       # 如果你用的是 master，就改成 master
+    branches: [ main ]    # 如果默认分支是 master，就改成 master
 
 permissions:
   contents: read
@@ -18,22 +18,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ruby/setup-ruby@v1
+
+      # 使用官方 Pages 的 Jekyll 构建器（容器里自带 github-pages 支持）
+      - uses: actions/configure-pages@v5
+      - uses: actions/jekyll-build-pages@v1
         with:
-          ruby-version: '3.2'
-          bundler-cache: true
-      - run: bundle init || true
-      - run: |
-          if ! grep -q "github-pages" Gemfile; then
-            echo 'source "https://rubygems.org"' > Gemfile
-            echo 'gem "github-pages", group: :jekyll_plugins' >> Gemfile
-            echo 'gem "webrick"' >> Gemfile
-          fi
-      - run: bundle install
-      - run: bundle exec jekyll build --trace
+          source: .          # 站点源码目录
+          destination: ./_site
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
+
   deploy:
     needs: build
     runs-on: ubuntu-latest

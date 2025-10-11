@@ -2,7 +2,7 @@
 title:               IFT3700-Hockey
 tagline:             'A template based on the Lanyon Jekyll theme'
 description:         'Hockey project'
-url:                 https://tibbyshr.github.io/3700-Hockey-Project/
+url:                 https://tibbyshr.github.io/3700-Hockey-Blog/
 baseurl:             ''
 paginate:            5
 permalink:           pretty

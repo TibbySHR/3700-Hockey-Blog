@@ -1,5 +1,118 @@
 ---
 layout: post
-title: "Acquisition de données"
+title: Acquisition de données
 ---
 
+# Tutoriel : Téléchargement des données *Play-by-Play* de la LNH
+
+[`https://api-web.nhle.com/v1/gamecenter/{game_id}/play-by-play`](https://api-web.nhle.com/v1/gamecenter/{game_id}/play-by-play)
+
+L’objectif de ce tutoriel est d’expliquer comment télécharger, mettre en cache, nettoyer et visualiser les données *play-by-play* de la Ligue nationale de hockey (LNH).  
+Le pipeline couvre les saisons 2016 à 2024 et produit un jeu de données structuré et compressé, prêt pour l’analyse.
+
+## Fonction principale : téléchargement par saisons
+
+La fonction suivante gère le téléchargement de plusieurs saisons et types de matchs (saison régulière et séries éliminatoires) à l’aide du point d’accès de l’API.
+
+```python
+def fetch_year_range_fast(start_year: int, end_year: int, types=("regular", "playoffs")):
+    """
+    Télécharge les données play-by-play de la LNH pour plusieurs saisons et types de matchs.
+
+    Args:
+        start_year (int): Première saison à inclure (ex: 2016).
+        end_year (int): Dernière saison à inclure (incluse).
+        types (tuple[str]): Types de matchs à télécharger, par défaut ("regular", "playoffs").
+
+    Returns:
+        dict[tuple[int, str], int]: Nombre de matchs téléchargés ou trouvés en cache
+        pour chaque combinaison (année, type).
+    """
+    results = {}
+    for year in range(start_year, end_year + 1):
+        for gtype in types:
+            print(f"\n=== {year} {gtype} ===")
+            try:
+                ok = fetch_season_fast(year, gtype)
+                results[(year, gtype)] = ok
+            except Exception as e:
+                print(f"[ERR] {year} {gtype}: {e}")
+    return results
+```
+
+## Construction du jeu de données
+
+Une fois les fichiers JSON téléchargés, ils peuvent être transformés en un tableau de données grâce aux fonctions suivantes :
+
+```python
+df = build_dataset(2016, 2024, "regular")
+print(df.shape)
+df.head()
+```
+
+Le DataFrame résultant contient les colonnes suivantes :
+
+| Colonne | Description |
+|----------|--------------|
+| `event` | Type d’événement (goal, shot-on-goal, penalty, etc.) |
+| `secondaryType` | Détail secondaire (ex : type de tir) |
+| `period` | Numéro de période |
+| `periodTime` | Temps écoulé dans la période |
+| `dateTime` | Horodatage UTC de l’événement |
+| `team` | Équipe concernée |
+| `x` / `y` | Coordonnées de l’événement sur la patinoire |
+
+## Sauvegarde du jeu de données nettoyé
+
+```python
+save_clean_dataset(df, Path("data/clean/events_regular_2016_2024.csv.gz"))
+```
+
+Les jeux de données compressés sont stockés dans `data/clean/` et peuvent être relus directement avec `pandas` :
+
+```python
+import pandas as pd
+df_back = pd.read_csv("data/clean/events_regular_2016_2024.csv.gz", compression="gzip")
+print(df_back.shape)
+```
+
+## Vérification rapide
+
+Une vérification simple permet de visualiser la fréquence des principaux types d’événements :
+
+```python
+quick_event_counts(df, topn=10)
+```
+
+Cela affiche dans le terminal la distribution des événements (buts, tirs, pénalités, etc.) et génère un graphique en barres via `matplotlib`.
+
+## Résumé du pipeline
+
+| Étape | Fonction | Description |
+|-------|-----------|-------------|
+| 1️⃣ | `fetch_year_range_fast()` | Téléchargement de toutes les saisons et mise en cache |
+| 2️⃣ | `build_dataset()` | Extraction et concaténation des fichiers JSON |
+| 3️⃣ | `save_clean_dataset()` | Sauvegarde du DataFrame au format CSV compressé |
+| 4️⃣ | `quick_event_counts()` | Analyse rapide et visualisation des événements |
+
+## Structure finale des fichiers
+
+```
+data/
+├── raw/
+│   ├── 2016/
+│   │   ├── type-02/
+│   │   └── type-03/
+│   ├── ...
+│   └── 2024/
+├── clean/
+│   ├── events_regular_2016_2024.csv.gz
+│   └── events_playoffs_2016_2024.csv.gz
+```
+
+## Résumé final
+
+Ce tutoriel décrit le processus complet d’acquisition, de nettoyage et de sauvegarde des données *play-by-play* de la LNH.  
+Il combine automatisation, mise en cache locale et vérification visuelle rapide pour obtenir un ensemble de données complet couvrant les saisons **2016 à 2024**.
+
+L’approche peut être facilement adaptée pour d’autres ligues ou API sportives et constitue une base solide pour tout projet d’analyse de performance ou de modélisation prédictive.

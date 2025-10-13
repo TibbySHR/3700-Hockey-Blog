@@ -13,7 +13,7 @@ Nous avons créé une fonction `extract_shots_and_goals()` qui transforme les fi
 ## Exemple
 
 
-![DataFrame head]({{ site.baseurl }}assets/df_head.jpg)
+![DataFrame head]({{ site.baseurl }}/assets/df_head.jpg)
 
 
 
@@ -26,3 +26,4 @@ Nous avons créé une fonction `extract_shots_and_goals()` qui transforme les fi
    - Distance entre le tir et le but.  
    - Angle du tir par rapport au centre du filet.  
    - Tirs de rebond (détectés si le tir survient < 3 s après un autre tir de la même équipe).
+

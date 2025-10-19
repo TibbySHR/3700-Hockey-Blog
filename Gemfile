@@ -9,5 +9,10 @@ gem "jekyll-gist"
 gem "jekyll-sitemap"
 gem "jekyll-seo-tag" 
 gem "jekyll-paginate"
-gem "webrick", "~> 1.7"
+gem "github-pages", group: :jekyll_plugins
+
+gem "webrick", "~> 1.8"
+
+
+
 

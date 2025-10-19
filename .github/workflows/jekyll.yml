@@ -2,7 +2,7 @@ name: Build and Deploy Jekyll
 
 on:
   push:
-    branches: [ main ]    # 如果默认分支是 master，就改成 master
+    branches: [ main ]   
 
 permissions:
   contents: read
@@ -19,12 +19,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 使用官方 Pages 的 Jekyll 构建器（容器里自带 github-pages 支持）
-      - uses: actions/configure-pages@v5
-      - uses: actions/jekyll-build-pages@v1
+      - uses: ruby/setup-ruby@v1
         with:
-          source: .          # 站点源码目录
-          destination: ./_site
+          ruby-version: '3.1'     
+          bundler-cache: true
+
+      - run: bundle config set path 'vendor/bundle'
+      - run: bundle install
+
+      # 加 --trace --verbose
+      - run: bundle exec jekyll build --trace --verbose -d _site
+        env:
+          JEKYLL_ENV: production
 
       - uses: actions/upload-pages-artifact@v3
         with:
@@ -35,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deploy.outputs.page_url }}
     steps:
-      - id: deployment
+      - id: deploy
         uses: actions/deploy-pages@v4

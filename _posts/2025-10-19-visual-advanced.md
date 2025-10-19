@@ -17,7 +17,7 @@ Les graphiques produits permettra de visualiser la densité des tirs en zone off
 4. Visualisation avec lissage gaussien
 
 ## Plans de Tir Interactifs
-Les figures suivantes illustrent les cartes de tir offensif pour chaque saison.  
+Les figures suivantes illustrent les cartes de tir offensif pour les saisons.  
 Chaque graphique est interactif et permet de sélectionner l’équipe désirée.
 
 ### Saison 2016-2017 : {% include plan1.html %}

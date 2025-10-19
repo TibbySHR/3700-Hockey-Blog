@@ -10,8 +10,6 @@ gem "jekyll-sitemap"
 gem "jekyll-seo-tag" 
 gem "jekyll-paginate"
 
-gem "jekyll-remote-theme"
-
 
 gem "webrick", "~> 1.7"
 

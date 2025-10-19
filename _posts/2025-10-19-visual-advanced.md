@@ -20,20 +20,20 @@ Les graphiques produits permettra de visualiser la densité des tirs en zone off
 Les figures suivantes illustrent les cartes de tir offensif pour les saisons.  
 Chaque graphique est interactif et permet de sélectionner l’équipe désirée.
 
-### Saison 2016-2017 : 
-![2016](assets/2016.png)
+### Saison 2016-2017 :
+{% include plan_tir_2016_2017.html %}
 
 ### Saison 2017-2018 :
-![2017](assets/2017.png)
+{% include plan_tir_2017_2018.html %}
 
-### Saison 2018-2019 : 
-![2018](assets/2018.png)
+### Saison 2018-2019 :
+{% include plan_tir_2018_2019.html %}
 
-### Saison 2019-2020 : 
-![2019](assets/2019.png)
+### Saison 2019-2020 :
+{% include plan_tir_2019_2020.html %}
 
 ### Saison 2020-2021 :
-![2020](assets/2020.png)
+{% include plan_tir_2020_2021.html %}
 
 ## Analyses graph
 

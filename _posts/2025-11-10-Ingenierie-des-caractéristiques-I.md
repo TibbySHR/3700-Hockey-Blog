@@ -117,7 +117,7 @@ Type : dataset
 
 ### 📎 Lien vers l’artefact (à insérer ici)
 
-👉 [https://wandb.ai/](https://wandb.ai/haoran-sun-universite-de-montreal-/ift6758-stage2/runs/i5uth3g5)
+👉 [ https://wandb.ai/haoran-sun-universite-de-montreal-/IFT6758.2025-A-3700/runs/4lczyjss)
 
 
 Ce dataset contient **toutes les caractéristiques listées ci-dessus** et servira de base à l’entraînement des modèles xG à l’étape suivante.
@@ -128,5 +128,6 @@ Ce dataset contient **toutes les caractéristiques listées ci-dessus** et servi
 
 Cette étape nous a permis de passer d’une représentation isolée du tir à une représentation **contextuelle et dynamique**, ce qui est essentiel pour modéliser efficacement la probabilité qu’un tir aboutisse à un but.
 Ces caractéristiques seront utilisées dans la prochaine étape pour **entraîner des modèles de prédiction xG**.
+
 
 

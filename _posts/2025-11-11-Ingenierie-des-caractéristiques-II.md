@@ -8,7 +8,6 @@ title: Ingénierie des caractéristiques I
 
 Dans cette étape, notre objectif est de mieux comprendre la relation entre la position d’un tir et sa probabilité de devenir un but. Nous utilisons pour cela les données de **tous les matchs de saison régulière entre 2016/17 et 2019/20**, obtenues via l’API officielle de la LNH et prétraitées à l’étape 1.
 
-À partir des événements de type `SHOT` et `GOAL`, nous construisons un jeu de données au niveau du tir, qui servira à la fois pour l’analyse exploratoire ci-dessous et pour l’entraînement des modèles xG dans les sections suivantes.
 
 ---
 
@@ -23,7 +22,7 @@ Dans cette étape, notre objectif est de mieux comprendre la relation entre la p
 
 Pour calculer la distance et l’angle, nous supposons que les actions sont exprimées dans un repère où le tir est dirigé vers la droite (axe +x) et nous approchons le filet adverse par un point fixe `(x_net, y_net)`. Les coordonnées `(x, y)` des tirs situés dans la moitié gauche de la patinoire sont reflétées afin d’obtenir un repère cohérent : tous les tirs “regardent” le même but.
 
-Le résultat est un fichier de type CSV, que nous noterons `shots_train.csv`, contenant une ligne par tir et au moins les colonnes :
+Le résultat est un fichier de type CSV, que nous noterons `shots_train_v2.csv`, contenant une ligne par tir et au moins les colonnes :
 
 * `shot_distance`, `shot_angle`,
 * `is_goal`, `empty_net`,
@@ -60,11 +59,11 @@ Cette figure montre la distribution des tirs en fonction de l’**angle relatif 
 
 **Observations :**
 
-* Les tirs sont majoritairement concentrés autour de **0°**, c’est-à-dire près de l’axe central du filet.
-* Les **buts** sont encore plus concentrés que les tirs totaux dans cette zone d’angles faibles.
-* Lorsque l’angle devient plus prononcé (positions plus près de la bande), les buts deviennent relativement plus rares.
+* Les tirs sont fortement concentrés dans les angles faibles à modérés, avec une majorité des tentatives situées entre 0° et ±60° par rapport à l’axe du filet.
 
-Cela suggère que **tirer dans l’axe du filet** augmente la probabilité d’inscrire un but, à distance égale.
+* En comparant les buts aux tirs totaux, on observe que la proportion de buts est légèrement plus élevée lorsque |angle| < 60°, par rapport aux tirs très excentrés.
+
+* Pour des angles plus extrêmes (|angle| > 60°), bien que des tirs soient encore tentés, la probabilité de marquer diminue sensiblement, ce qui suggère une efficacité offensive réduite depuis des positions très fermées.
 
 ---
 
@@ -76,10 +75,11 @@ Dans cet **histogramme 2D**, un axe représente la distance et l’autre l’ang
 
 **Observations :**
 
-* Une forte densité de tirs (zone “chaude”) apparaît dans la région des **distances courtes et des angles faibles à modérés**.
-* À mesure que l’on s’éloigne du filet ou que l’angle devient extrême, la densité de tirs diminue.
+* La plus forte densité de tirs se situe à courte distance et pour des angles faibles à modérés, reflétant les positions depuis lesquelles les joueurs tentent le plus souvent de tirer.
 
-Cette vue combinée confirme que les **occasions de tir les plus fréquentes** se trouvent dans une région compacte devant le filet – la fameuse “high-danger area” des analystes.
+* Lorsque la distance augmente ou que l’angle devient très fermé, la fréquence des tirs diminue nettement, indiquant que ces positions sont moins accessibles ou moins privilégiées en situation de jeu.
+
+Cette visualisation décrit donc la géographie des tentatives de tir, mais ne permet pas à elle seule d’inférer la dangerosité réelle de ces tirs en termes de probabilité de but.
 
 ---
 
@@ -99,12 +99,13 @@ Nous calculons ce taux dans des **intervalles (bins)** de distance ou d’angle,
 
 **Observations :**
 
-* À **très courte distance**, le taux de but est relativement élevé.
-* Le taux de but **décroît de manière monotone** (avec du bruit) lorsque la distance augmente.
-* Au-delà d’une certaine distance, le taux de but semble se stabiliser à un niveau très faible.
+* Le taux de but est maximal à très courte distance, ce qui reflète une probabilité de conversion élevée pour les tirs pris près du filet.
 
-Ce comportement correspond exactement à ce que l’on attend d’un **modèle xG** : la distance au filet est l’un des déterminants principaux de la qualité d’une occasion.
+* À mesure que la distance augmente, le taux de but diminue globalement, bien que la courbe présente des fluctuations dues au bruit statistique, en particulier dans les bins peu peuplés.
 
+* Pour les longues distances, le taux de but devient très faible et relativement stable, suggérant que ces tirs ont une contribution marginale à la probabilité globale de marquer.
+
+Cette relation confirme que la distance est un facteur explicatif majeur dans la modélisation xG, mais qu’elle doit être combinée à d’autres variables (angle, type de tir, situation de jeu) pour capturer pleinement la qualité d’une occasion.
 ---
 
 ### 2.2 Taux de but vs angle
@@ -133,15 +134,13 @@ Pour exploiter cette information, nous regardons uniquement les **buts** (`is_go
 
 **Observations :**
 
-* Les buts sur **filet non vide** se concentrent principalement à des distances raisonnables devant le filet adverse, comme on pouvait s’y attendre.
-* Les buts sur **filet vide** sont répartis sur une plage de distances plus large, incluant des tirs très lointains, ce qui correspond aux situations où le gardien est retiré en fin de match.
+* Le taux de but est maximal en moyenne pour des angles proches de 0°, correspondant à des tirs pris face au filet.
 
-Pour aller plus loin, nous avons extrait les cas potentiellement “anormaux”, par exemple des buts marqués :
+* À mesure que l’angle s’écarte de l’axe central, le taux de but tend globalement à diminuer, malgré certaines fluctuations dues au bruit statistique et au découpage en intervalles (binning).
 
-* avec `empty_net = 0`
-* mais à une distance très grande (par exemple > 80 pieds/unité).
+* Pour des angles très extrêmes, la probabilité de marquer devient faible, même si des buts restent possibles de manière occasionnelle.
 
-Ces événements sont inspectés manuellement (par exemple via les vidéos du gamecenter de la LNH) afin de vérifier si les coordonnées ou l’étiquette `emptyNet` sont plausibles. Nous n’avons pas identifié d’erreur systématique affectant un grand nombre d’événements ; les quelques cas extrêmes semblent compatibles avec des situations de jeu particulières ou correspondent à des erreurs isolées qui n’ont pas d’impact majeur sur l’ensemble du corpus.
+En combinant ces résultats avec ceux obtenus pour la distance, on observe que l’angle et la distance capturent deux dimensions complémentaires de la qualité d’un tir. Ces deux variables constituent donc des entrées naturelles et pertinentes pour la modélisation des buts attendus (xG).
 
 ---
 

@@ -40,7 +40,7 @@ Ce jeu de données sera utilisé pour les visualisations ci-dessous et comme ent
 
 
 Dans cette figure, nous représentons le **nombre de tirs** en fonction de la distance au filet, en séparant les tirs qui se terminent par un but (`is_goal = 1`) de ceux qui ne marquent pas (`is_goal = 0`).
-
+ 
 **Observations :**
 
 * La grande majorité des tirs proviennent de **distances relativement courtes** devant le filet.
@@ -154,4 +154,5 @@ Dans cette première phase d’ingénierie des caractéristiques, nous avons :
 * réalisé quelques **vérifications de qualité des données** en exploitant la distinction entre filets vides et non vides.
 
 Ce jeu de données (`shots_train.csv`) servira de base à la suite du projet, où nous testerons différents modèles statistiques et de machine learning (régression logistique, modèles d’arbres, etc.) pour prédire la probabilité qu’un tir donné se transforme en but. Les figures présentées ici constituent le socle intuitif et empirique de ces modèles : elles montrent comment la notion de “qualité du tir” émerge naturellement à partir de la distance et de l’angle.
+
 

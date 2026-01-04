@@ -63,42 +63,45 @@ Ces caractéristiques traduisent trois phénomènes du hockey offensif :
 
 ### Figure 1 — Distribution de la distance des tirs
 
-[
-\textbf{Les buts proviennent en moyenne de distances plus courtes.}
-]
+Les buts sont majoritairement marqués à courte distance du filet.
+On observe que la distribution des tirs menant à un but est fortement concentrée sur les faibles distances, tandis que les tirs non concluants s’étendent sur une plage beaucoup plus large. Cette différence suggère que la distance au filet constitue une variable explicative fondamentale pour la probabilité de marquer.
 
-![fig1\_hist\_shot\_distance]({{ site.baseurl }}/assets/fig1_hist_shot_distance.png)
+![fig1_hist_shot_distance]({{ site.baseurl }}/assets/hist_distance_goals_vs_nongoals.png)
 
 ---
 
 ### Figure 2 — Angle vs Distance du tir (couleur = but / non-but)
 
-[
-\textbf{Zone dangereuse = faible distance + petit angle.}
-]
+Les buts sont associés à des angles de tir plus favorables.
+Les tirs qui aboutissent à un but présentent en moyenne des angles plus petits, indiquant une meilleure ouverture sur le filet. À l’inverse, les tirs pris sous des angles extrêmes sont beaucoup plus fréquemment arrêtés ou manqués.
 
-![fig2\_scatter\_angle\_distance]({{ site.baseurl }}/assets/fig2_scatter_angle_distance.png)
+![fig2_hist_shot_angle]({{ site.baseurl }}/assets/hist_angle_goals_vs_nongoals.png)
+---
+
+### Figure 3 — Histogramme bidimensionnel distance × angle
+
+La majorité des tirs est concentrée dans une zone restreinte devant le filet.
+La densité maximale de tirs se situe à faible distance et à angle modéré, correspondant à la zone de l’enclave. Cette concentration reflète des schémas offensifs réalistes et confirme la cohérence spatiale des données utilisées.
+
+![fig3_hist2d_distance_angle]({{ site.baseurl }}/assets/hist2d_distance_angle.png)
 
 ---
 
-### Figure 3 — Carte de densité des tirs (hexbin, coordonnées x–y)
+### Figure 4 — Taux de but en fonction de la distance et de l’angle
 
-[
-\textbf{Concentration nette dans l’enclave devant le filet.}
-]
+Le taux de but décroît rapidement avec l’augmentation de la distance et de l’angle.
+Le taux de conversion est élevé pour les tirs pris près du filet et chute de manière monotone lorsque la distance augmente ou que l’angle devient plus défavorable. Cette observation justifie l’utilisation conjointe de la distance et de l’angle comme caractéristiques de base dans un modèle de buts espérés (xG).
 
-![fig3\_hexbin\_xy]({{ site.baseurl }}/assets/fig3_hexbin_xy.png)
+![fig4_goal_rate_distance_angle]({{ site.baseurl }}/assets/goal_rate_vs_distance.png)
 
 ---
 
-### Figure 4 — Distribution de la vitesse du jeu (rebond vs non-rebond)
+### Figure 5 — Buts par distance : filet vide vs filet non vide
 
-[
-\textbf{Les rebonds sont souvent associés à des phases de jeu plus rapides.}
-]
+Les buts marqués à très longue distance sont presque exclusivement associés à des situations de filet vide.
+Lorsque le filet n’est pas vide, les buts provenant de distances élevées sont extrêmement rares, ce qui confirme la validité des données et met en évidence l’importance de distinguer les situations de filet vide dans l’analyse.
 
-![fig4\_hist\_play\_speed]({{ site.baseurl }}/assets/fig4_hist_play_speed.png)
-
+![fig5_goals_empty_net]({{ site.baseurl }}/assets/goals_by_distance_empty_vs_nonempty.png)
 ---
 
 ## 5.Export d’un sous-ensemble (WandB Dataset Artifact)
@@ -115,9 +118,9 @@ Nom de l’artefact : wpg_v_wsh_2017021065
 Type : dataset
 ```
 
-### 📎 Lien vers l’artefact (à insérer ici)
+### 📎 Lien vers l’artefact
 
-👉 [ https://wandb.ai/haoran-sun-universite-de-montreal-/IFT6758.2025-A-3700/runs/4lczyjss)
+👉 [https://wandb.ai/]( https://wandb.ai/haoran-sun-universite-de-montreal-/IFT6758.2025-A-3700/artifacts/dataset/wpg_v_wsh_2017021065)
 
 
 Ce dataset contient **toutes les caractéristiques listées ci-dessus** et servira de base à l’entraînement des modèles xG à l’étape suivante.
@@ -128,6 +131,5 @@ Ce dataset contient **toutes les caractéristiques listées ci-dessus** et servi
 
 Cette étape nous a permis de passer d’une représentation isolée du tir à une représentation **contextuelle et dynamique**, ce qui est essentiel pour modéliser efficacement la probabilité qu’un tir aboutisse à un but.
 Ces caractéristiques seront utilisées dans la prochaine étape pour **entraîner des modèles de prédiction xG**.
-
 
 
